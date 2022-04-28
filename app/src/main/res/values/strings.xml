@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Todo King</string>
+    <string name="todo">TODO</string>
+    <string name="title">Title</string>
+    <string name="description">description</string>
+    <string name="valider">Valider</string>
+    <string name="modify">Modify</string>
+</resources>
