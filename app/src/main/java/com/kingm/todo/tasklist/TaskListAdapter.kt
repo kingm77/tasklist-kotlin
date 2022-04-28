@@ -12,14 +12,14 @@ import com.kingm.todo.R
 
 class TaskListAdapter: RecyclerView.Adapter<TaskListAdapter.TaskViewHolder>() {
 
-    var currentList: List<Task> = emptyList()
+    private var currentList: List<Task> = emptyList()
     var onClickDelete: (Task) -> Unit = {}
     var onModify: (Task) -> Unit = {}
 
     inner class TaskViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
-        val del = itemView.findViewById<ImageButton>(R.id.imageButton)
-        val modify = itemView.findViewById<Button>(R.id.modif_btn)
+        private val del = itemView.findViewById<ImageButton>(R.id.imageButton)
+        private val modify = itemView.findViewById<Button>(R.id.modif_btn)
 
 
         fun bind(task: Task){

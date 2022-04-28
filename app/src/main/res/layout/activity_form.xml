@@ -20,19 +20,21 @@
             android:layout_height="wrap_content"
             android:hint="@string/title"
             android:id="@+id/titleE"
-             />
+            android:inputType="text"
+            android:importantForAutofill="no" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/description"
             android:id="@+id/descE"
-            />
+            android:inputType="text"
+            android:importantForAutofill="no" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/valider"
+            android:text="@string/validate"
             android:background="#3f76ff"
             android:textColor="#fff"
             android:id="@+id/validate"/>

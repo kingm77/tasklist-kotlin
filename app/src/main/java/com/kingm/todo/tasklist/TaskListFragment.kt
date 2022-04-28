@@ -7,51 +7,48 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.kingm.todo.R
 import com.kingm.todo.form.FormActivity
-import java.util.*
-import kotlin.math.log
+import kotlinx.coroutines.launch
+
 
 class TaskListFragment: Fragment() {
 
-    private var taskList = listOf(
-        Task(id = "id_1", title = "Task 1", description = "description 1"),
-        Task(id = "id_2", title = "Task 2"),
-        Task(id = "id_3", title = "Task 3")
-    )
+    private val viewModel: TasksListViewModel by viewModels()
+
     private val adapter = TaskListAdapter()
 
-    val createTask = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private val createTask = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         var task = result.data?.getSerializableExtra("task") as Task?
         Log.e("mod", "hom!!!")
         if (task != null) {
-            addTask(task)
+            lifecycleScope.launch { // on lance une coroutine car `collect` est `suspend`
+                viewModel.create(task!!)
+            }
         }
         else
         {
             task = result.data?.getSerializableExtra("modTask") as Task?
             if (task != null) {
-                taskList = taskList.map { (if (it.id == task.id) task else it) }
+                lifecycleScope.launch { // on lance une coroutine car `collect` est `suspend`
+                    viewModel.update(task)
+                }
             }
-            adapter.refreshAdapter(taskList)
         }
     }
 
-    /*val modifTask = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        val task = result.data?.getSerializableExtra("modTask") as Task?
-        Log.e("mod", "hum!!!")
-
-    }*/
-
-
-    fun addTask(newTask: Task){
-        taskList = taskList + newTask
-        adapter.refreshAdapter(taskList)
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launch { // on lance une coroutine car `collect` est `suspend`
+            Log.e("refresh", "retry")
+            viewModel.refresh()
+        }
     }
 
     override fun onCreateView(
@@ -59,16 +56,19 @@ class TaskListFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_task_list, container, false)
-        adapter.currentList = taskList
-
-        return rootView
+        return inflater.inflate(R.layout.fragment_task_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val layoutView = view.findViewById<ConstraintLayout>(R.id.constraint_view)
         val recyclerView = view.findViewById<RecyclerView>(R.id.task_recycler_view)
+
+        lifecycleScope.launch { // on lance une coroutine car `collect` est `suspend`
+            viewModel.tasksStateFlow.collect { newList ->
+                adapter.refreshAdapter(newList)
+            }
+        }
 
         recyclerView.adapter = adapter
         val floatingButton = layoutView.findViewById<FloatingActionButton>(R.id.floatingActionButton)
@@ -79,10 +79,13 @@ class TaskListFragment: Fragment() {
         }
 
         adapter.onClickDelete = { task ->
-            Log.e("ldo", "nrm")
-            Log.e("ldo", taskList.indexOf(task).toString())
-            taskList = taskList.filter { taske: Task ->  taske != task}
-            adapter.refreshAdapter(taskList)
+            Log.e("ldo", "remove")
+            lifecycleScope.launch { // on lance une coroutine car `collect` est `suspend`
+                viewModel.delete(task)
+                viewModel.tasksStateFlow.collect { newList ->
+                    adapter.refreshAdapter(newList)
+                }
+            }
         }
 
         adapter.onModify = {task ->

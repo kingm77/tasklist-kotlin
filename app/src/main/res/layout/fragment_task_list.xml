@@ -7,25 +7,35 @@
     android:layout_height="match_parent"
     >
 
+
+    <TextView
+        android:id="@+id/userInfo"
+        android:layout_width="243dp"
+        android:layout_height="58dp"
+        android:text=""
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="MissingConstraints" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/task_recycler_view"
         android:layout_width="409dp"
         android:layout_height="673dp"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@+id/userInfo"
         tools:ignore="MissingConstraints"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-
+        tools:layout_editor_absoluteX="2dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
+        android:contentDescription="@string/todo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_baseline_10k_24"
-        android:contentDescription="@string/todo" />
+        tools:ignore="ImageContrastCheck" />
 
 
 
