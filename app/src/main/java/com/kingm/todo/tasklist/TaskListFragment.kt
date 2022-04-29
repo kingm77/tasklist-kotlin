@@ -45,10 +45,7 @@ class TaskListFragment: Fragment() {
 
     override fun onResume() {
         super.onResume()
-        lifecycleScope.launch { // on lance une coroutine car `collect` est `suspend`
-            Log.e("refresh", "retry")
-            viewModel.refresh()
-        }
+        viewModel.refresh()
     }
 
     override fun onCreateView(

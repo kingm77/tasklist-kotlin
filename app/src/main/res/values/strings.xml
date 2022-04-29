@@ -6,4 +6,9 @@
     <string name="modify">Modify</string>
     <string name="validate">validate</string>
     <string name="todo">TODO</string>
+    <string name="userimg">userImg</string>
+    <string name="contact_name">Contact Name</string>
+    <string name="avatar">avatar</string>
+    <string name="choisir_une_image">Choisir une Image</string>
+    <string name="prendre_une_photo">Prendre une photo</string>
 </resources>
